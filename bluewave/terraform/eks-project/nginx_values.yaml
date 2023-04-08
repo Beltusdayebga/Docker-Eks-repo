@@ -1,0 +1,301 @@
+controller:
+  # tls:
+  # - secretName: server
+  #   hosts:
+  #   - "*.observsmart.com"
+  redirect-http-to-https: true
+  admissionWebhooks:
+    enabled: false
+
+  # kind: DaemonSet
+  service:
+    type: LoadBalancer
+    externalTrafficPolicy: "Local"
+    annotations:
+      service.beta.kubernetes.io/aws-load-balancer-backend-protocol: tcp
+      service.beta.kubernetes.io/aws-load-balancer-attributes: load_balancing.cross_zone.enabled=true
+      # service.beta.kubernetes.io/aws-load-balancer-attributes: load_balancing.cross_zone.enabled=false,deletion_protection.enabled=true,access_logs.s3.enabled=true,access_logs.s3.bucket=acadia-multitenant-eks-access-log-bucket,access_logs.s3.prefix=acadia
+      service.beta.kubernetes.io/aws-load-balancer-connection-idle-timeout: '60'
+      service.beta.kubernetes.io/aws-load-balancer-type: 'external'
+      service.beta.kubernetes.io/aws-load-balancer-scheme: 'internet-facing'
+      service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: 'ip'
+      # service.beta.kubernetes.io/aws-load-balancer-proxy-protocol: "*"
+      service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: preserve_client_ip.enabled=true
+      # service.beta.kubernetes.io/aws-load-balancer-target-group-attributes: preserve_client_ip.enabled=true,deregistration_delay.timeout_seconds=120,stickiness.enabled=true,stickiness.type=source_ip,proxy_protocol_v2.enabled=true,deregistration_delay.connection_termination.enabled=true
+      service.beta.kubernetes.io/aws-load-balancer-healthcheck-interval: '40'
+
+
+
+
+
+
+
+
+
+    targetPorts:
+      http: http
+      https: https
+
+  # defaultTLS:
+  #   ## The base64-encoded TLS certificate for the default HTTPS server. If not specified, a pre-generated self-signed certificate is used.
+  #   ## Note: It is recommended that you specify your own certificate.
+  #   cert: "-----BEGIN CERTIFICATE-----\nMIIH2zCCBsOgAwIBAgIQCYEpuMWkGtQGwXS03C6R1DANBgkqhkiG9w0BAQsFADBP\nMQswCQYDVQQGEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMSkwJwYDVQQDEyBE\naWdpQ2VydCBUTFMgUlNBIFNIQTI1NiAyMDIwIENBMTAeFw0yMjA2MTAwMDAwMDBa\nFw0yMzA3MTEyMzU5NTlaMH0xCzAJBgNVBAYTAlVTMRUwEwYDVQQIEwxQZW5uc3ls\ndmFuaWExFzAVBgNVBAcTDk5ld3Rvd24gU3F1YXJlMSIwIAYDVQQKExlJbnZpc2Fs\nZXJ0IFNvbHV0aW9ucywgTExDMRowGAYDVQQDDBEqLm9ic2VydnNtYXJ0LmNvbTCC\nAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBAL9hepIWv9FgZQ1H0n4yJuol\nlmvgRLKDFRALITz675ciT9zmVKWwi5Qgy/r9TpmoScqKxc0uKpVjjrEZD9endj9d\nGyEHG16JT7ua10XgJCenJCL2xItgFg6o54ORyNrLsOHVzSmO/sgiTQKqUdf8XTgB\nACyJLThlwIBZv3Xh8BqF6lSQqOT1p8N9/NH1FDTTLZR0zj0+mOkC10Cygy7s10+n\nEwplceaGxX8b6nKoymazXRKkRSeaEwzBIuVsj7NXX58RfQUtTJtJO9FScZBBkYWO\nzbxebzyJVE3vebYxBcZq5v6FG2wFuxLOmkERlJ2B3E09ksE3DWsn0klLSYaWJrN+\nEnug/hrcy+MzvDgnhLxPdpgvsjJniLb7sdxjthBwFTSZ8kWdbBJN1P9HJfKuaXsm\nxgrmLZ1ogyJCXC+ga4275/iRdB49MlK+I823WuKN7LnR3q4Gpbae6EqfnjhRbHsZ\nr8vrCGwhkdnthBgC00gu1G25DN0dawyQFh9o28CJTJRQ9NCgGDHXsxgQlO90fV/B\nFqOVLWkXVOw4hpihHZnL79uYmf9UQCVK1t0JvcBld5KjQwPJH7iSpuXs11AdSwpV\nqajpmp4rkK8qPqs2E4mSnP8+NUMwAz3+N4iRX6FovDR0VWSxRFJEtyXmiEHoc9EO\n9UtYdIl/7SQIPcep28kLAgMBAAGjggODMIIDfzAfBgNVHSMEGDAWgBS3a6LqqKqE\njHnqtNoPmLLFlXa59DAdBgNVHQ4EFgQUCKbB4U1juhq/TO/Ew9EFZX5JZZkwLQYD\nVR0RBCYwJIIRKi5vYnNlcnZzbWFydC5jb22CD29ic2VydnNtYXJ0LmNvbTAOBgNV\nHQ8BAf8EBAMCBaAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMIGPBgNV\nHR8EgYcwgYQwQKA+oDyGOmh0dHA6Ly9jcmwzLmRpZ2ljZXJ0LmNvbS9EaWdpQ2Vy\ndFRMU1JTQVNIQTI1NjIwMjBDQTEtNC5jcmwwQKA+oDyGOmh0dHA6Ly9jcmw0LmRp\nZ2ljZXJ0LmNvbS9EaWdpQ2VydFRMU1JTQVNIQTI1NjIwMjBDQTEtNC5jcmwwPgYD\nVR0gBDcwNTAzBgZngQwBAgIwKTAnBggrBgEFBQcCARYbaHR0cDovL3d3dy5kaWdp\nY2VydC5jb20vQ1BTMH8GCCsGAQUFBwEBBHMwcTAkBggrBgEFBQcwAYYYaHR0cDov\nL29jc3AuZGlnaWNlcnQuY29tMEkGCCsGAQUFBzAChj1odHRwOi8vY2FjZXJ0cy5k\naWdpY2VydC5jb20vRGlnaUNlcnRUTFNSU0FTSEEyNTYyMDIwQ0ExLTEuY3J0MAkG\nA1UdEwQCMAAwggF/BgorBgEEAdZ5AgQCBIIBbwSCAWsBaQB3AK33vvp8/xDIi509\nnB4+GGq0Zyldz7EMJMqFhjTr3IKKAAABgU3fbpQAAAQDAEgwRgIhALAuqPVVGVR7\nnHgK4OFHOk8tY/xFVDu9rDKtyCqv6WlwAiEA2KHj/Uiw9Fg+aqPu8mDXGlHk56+z\nkSV8E10Y0ToPUAkAdQA1zxkbv7FsV78PrUxtQsu7ticgJlHqP+Eq76gDwzvWTAAA\nAYFN325sAAAEAwBGMEQCIGD6ZcxzbgEMVuqLBf+Qla/L+9hPAMawxQeFeoEn7tPV\nAiBCO7XV80JWUppIjYC4iuzfQnmVPYOXNNlZt/bZtgQYOAB3ALNzdwfhhFD4Y4bW\nBancEQlKeS2xZwwLh9zwAw55NqWaAAABgU3fbp8AAAQDAEgwRgIhALm2/UhmMugc\nfAaROUqn5wDaIs023fgFAD/hjZE4e4acAiEA48OyO6eKmUY8t4St1jpukPV5fwW5\nZEP1b/KJGiNOkV8wDQYJKoZIhvcNAQELBQADggEBAHXFZfP9hdfEXZaAyWBv/wQm\naytjj+xjT7FK1VnUKyV91maBY6wc1rM7k4/85jDMYiRTOrA6YGOSCwXUcuhcrOcp\nzxSNbmAGuhZWLUZyzFEQwAN1CeWVSmwEsiswo/xc4IQ4bft8FOJIUesN//qnN4Uq\nPI2S64irybgfJ0sF82fz46v8LMtmzVhenCpM3FzLOa9LS4weIT4d3oDVz4FNF6Me\nJart8ih+E02WpBEFfuKgY1lQkEiknCiRm63UxLkCHzotvFJTVrsPH9/Y/Zn4cObl\nhJszTYxYnY+D2J5Ozyrsm2iuYdzJZaW0FcxkJ0giw1b5R7ULIwV96LXL36XROQo=\n-----END CERTIFICATE-----\n-----BEGIN CERTIFICATE-----\nMIIEvjCCA6agAwIBAgIQBtjZBNVYQ0b2ii+nVCJ+xDANBgkqhkiG9w0BAQsFADBh\nMQswCQYDVQQGEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYDVQQLExB3\nd3cuZGlnaWNlcnQuY29tMSAwHgYDVQQDExdEaWdpQ2VydCBHbG9iYWwgUm9vdCBD\nQTAeFw0yMTA0MTQwMDAwMDBaFw0zMTA0MTMyMzU5NTlaME8xCzAJBgNVBAYTAlVT\nMRUwEwYDVQQKEwxEaWdpQ2VydCBJbmMxKTAnBgNVBAMTIERpZ2lDZXJ0IFRMUyBS\nU0EgU0hBMjU2IDIwMjAgQ0ExMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC\nAQEAwUuzZUdwvN1PWNvsnO3DZuUfMRNUrUpmRh8sCuxkB+Uu3Ny5CiDt3+PE0J6a\nqXodgojlEVbbHp9YwlHnLDQNLtKS4VbL8Xlfs7uHyiUDe5pSQWYQYE9XE0nw6Ddn\ng9/n00tnTCJRpt8OmRDtV1F0JuJ9x8piLhMbfyOIJVNvwTRYAIuE//i+p1hJInuW\nraKImxW8oHzf6VGo1bDtN+I2tIJLYrVJmuzHZ9bjPvXj1hJeRPG/cUJ9WIQDgLGB\nAfr5yjK7tI4nhyfFK3TUqNaX3sNk+crOU6JWvHgXjkkDKa77SU+kFbnO8lwZV21r\neacroicgE7XQPUDTITAHk+qZ9QIDAQABo4IBgjCCAX4wEgYDVR0TAQH/BAgwBgEB\n/wIBADAdBgNVHQ4EFgQUt2ui6qiqhIx56rTaD5iyxZV2ufQwHwYDVR0jBBgwFoAU\nA95QNVbRTLtm8KPiGxvDl7I90VUwDgYDVR0PAQH/BAQDAgGGMB0GA1UdJQQWMBQG\nCCsGAQUFBwMBBggrBgEFBQcDAjB2BggrBgEFBQcBAQRqMGgwJAYIKwYBBQUHMAGG\nGGh0dHA6Ly9vY3NwLmRpZ2ljZXJ0LmNvbTBABggrBgEFBQcwAoY0aHR0cDovL2Nh\nY2VydHMuZGlnaWNlcnQuY29tL0RpZ2lDZXJ0R2xvYmFsUm9vdENBLmNydDBCBgNV\nHR8EOzA5MDegNaAzhjFodHRwOi8vY3JsMy5kaWdpY2VydC5jb20vRGlnaUNlcnRH\nbG9iYWxSb290Q0EuY3JsMD0GA1UdIAQ2MDQwCwYJYIZIAYb9bAIBMAcGBWeBDAEB\nMAgGBmeBDAECATAIBgZngQwBAgIwCAYGZ4EMAQIDMA0GCSqGSIb3DQEBCwUAA4IB\nAQCAMs5eC91uWg0Kr+HWhMvAjvqFcO3aXbMM9yt1QP6FCvrzMXi3cEsaiVi6gL3z\nax3pfs8LulicWdSQ0/1s/dCYbbdxglvPbQtaCdB73sRD2Cqk3p5BJl+7j5nL3a7h\nqG+fh/50tx8bIKuxT8b1Z11dmzzp/2n3YWzW2fP9NsarA4h20ksudYbj/NhVfSbC\nEXffPgK2fPOre3qGNm+499iTcc+G33Mw+nur7SpZyEKEOxEXGlLzyQ4UfaJbcme6\nce1XR2bFuAJKZTRei9AqPCCcUZlM51Ke92sRKw2Sfh3oius2FkOH6ipjv3U/697E\nA7sKPPcw7+uvTPyLNhBzPvOk\n-----END CERTIFICATE-----\n"
+
+  #   ## The base64-encoded TLS key for the default HTTPS server. Note: If not specified, a pre-generated key is used.
+  #   ## Note: It is recommended that you specify your own key.
+  #   key: "-----BEGIN RSA PRIVATE KEY-----\n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\n-----END RSA PRIVATE KEY-----\n"
+
+  #   ## The secret with a TLS certificate and key for the default HTTPS server.
+  #   ## The value must follow the following format: `<namespace>/<name>`.
+  #   ## Used as an alternative to specifying a certificate and key using `controller.defaultTLS.cert` and `controller.defaultTLS.key` parameters.
+  #   secret: default/server-2
+
+  # wildcardTLS:
+  #   ## The base64-encoded TLS certificate for every Ingress host that has TLS enabled but no secret specified.
+  #   ## If the parameter is not set, for such Ingress hosts NGINX will break any attempt to establish a TLS connection.
+  #   cert: "-----BEGIN CERTIFICATE-----\nMIIH2zCCBsOgAwIBAgIQCYEpuMWkGtQGwXS03C6R1DANBgkqhkiG9w0BAQsFADBP\nMQswCQYDVQQGEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMSkwJwYDVQQDEyBE\naWdpQ2VydCBUTFMgUlNBIFNIQTI1NiAyMDIwIENBMTAeFw0yMjA2MTAwMDAwMDBa\nFw0yMzA3MTEyMzU5NTlaMH0xCzAJBgNVBAYTAlVTMRUwEwYDVQQIEwxQZW5uc3ls\ndmFuaWExFzAVBgNVBAcTDk5ld3Rvd24gU3F1YXJlMSIwIAYDVQQKExlJbnZpc2Fs\nZXJ0IFNvbHV0aW9ucywgTExDMRowGAYDVQQDDBEqLm9ic2VydnNtYXJ0LmNvbTCC\nAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBAL9hepIWv9FgZQ1H0n4yJuol\nlmvgRLKDFRALITz675ciT9zmVKWwi5Qgy/r9TpmoScqKxc0uKpVjjrEZD9endj9d\nGyEHG16JT7ua10XgJCenJCL2xItgFg6o54ORyNrLsOHVzSmO/sgiTQKqUdf8XTgB\nACyJLThlwIBZv3Xh8BqF6lSQqOT1p8N9/NH1FDTTLZR0zj0+mOkC10Cygy7s10+n\nEwplceaGxX8b6nKoymazXRKkRSeaEwzBIuVsj7NXX58RfQUtTJtJO9FScZBBkYWO\nzbxebzyJVE3vebYxBcZq5v6FG2wFuxLOmkERlJ2B3E09ksE3DWsn0klLSYaWJrN+\nEnug/hrcy+MzvDgnhLxPdpgvsjJniLb7sdxjthBwFTSZ8kWdbBJN1P9HJfKuaXsm\nxgrmLZ1ogyJCXC+ga4275/iRdB49MlK+I823WuKN7LnR3q4Gpbae6EqfnjhRbHsZ\nr8vrCGwhkdnthBgC00gu1G25DN0dawyQFh9o28CJTJRQ9NCgGDHXsxgQlO90fV/B\nFqOVLWkXVOw4hpihHZnL79uYmf9UQCVK1t0JvcBld5KjQwPJH7iSpuXs11AdSwpV\nqajpmp4rkK8qPqs2E4mSnP8+NUMwAz3+N4iRX6FovDR0VWSxRFJEtyXmiEHoc9EO\n9UtYdIl/7SQIPcep28kLAgMBAAGjggODMIIDfzAfBgNVHSMEGDAWgBS3a6LqqKqE\njHnqtNoPmLLFlXa59DAdBgNVHQ4EFgQUCKbB4U1juhq/TO/Ew9EFZX5JZZkwLQYD\nVR0RBCYwJIIRKi5vYnNlcnZzbWFydC5jb22CD29ic2VydnNtYXJ0LmNvbTAOBgNV\nHQ8BAf8EBAMCBaAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMIGPBgNV\nHR8EgYcwgYQwQKA+oDyGOmh0dHA6Ly9jcmwzLmRpZ2ljZXJ0LmNvbS9EaWdpQ2Vy\ndFRMU1JTQVNIQTI1NjIwMjBDQTEtNC5jcmwwQKA+oDyGOmh0dHA6Ly9jcmw0LmRp\nZ2ljZXJ0LmNvbS9EaWdpQ2VydFRMU1JTQVNIQTI1NjIwMjBDQTEtNC5jcmwwPgYD\nVR0gBDcwNTAzBgZngQwBAgIwKTAnBggrBgEFBQcCARYbaHR0cDovL3d3dy5kaWdp\nY2VydC5jb20vQ1BTMH8GCCsGAQUFBwEBBHMwcTAkBggrBgEFBQcwAYYYaHR0cDov\nL29jc3AuZGlnaWNlcnQuY29tMEkGCCsGAQUFBzAChj1odHRwOi8vY2FjZXJ0cy5k\naWdpY2VydC5jb20vRGlnaUNlcnRUTFNSU0FTSEEyNTYyMDIwQ0ExLTEuY3J0MAkG\nA1UdEwQCMAAwggF/BgorBgEEAdZ5AgQCBIIBbwSCAWsBaQB3AK33vvp8/xDIi509\nnB4+GGq0Zyldz7EMJMqFhjTr3IKKAAABgU3fbpQAAAQDAEgwRgIhALAuqPVVGVR7\nnHgK4OFHOk8tY/xFVDu9rDKtyCqv6WlwAiEA2KHj/Uiw9Fg+aqPu8mDXGlHk56+z\nkSV8E10Y0ToPUAkAdQA1zxkbv7FsV78PrUxtQsu7ticgJlHqP+Eq76gDwzvWTAAA\nAYFN325sAAAEAwBGMEQCIGD6ZcxzbgEMVuqLBf+Qla/L+9hPAMawxQeFeoEn7tPV\nAiBCO7XV80JWUppIjYC4iuzfQnmVPYOXNNlZt/bZtgQYOAB3ALNzdwfhhFD4Y4bW\nBancEQlKeS2xZwwLh9zwAw55NqWaAAABgU3fbp8AAAQDAEgwRgIhALm2/UhmMugc\nfAaROUqn5wDaIs023fgFAD/hjZE4e4acAiEA48OyO6eKmUY8t4St1jpukPV5fwW5\nZEP1b/KJGiNOkV8wDQYJKoZIhvcNAQELBQADggEBAHXFZfP9hdfEXZaAyWBv/wQm\naytjj+xjT7FK1VnUKyV91maBY6wc1rM7k4/85jDMYiRTOrA6YGOSCwXUcuhcrOcp\nzxSNbmAGuhZWLUZyzFEQwAN1CeWVSmwEsiswo/xc4IQ4bft8FOJIUesN//qnN4Uq\nPI2S64irybgfJ0sF82fz46v8LMtmzVhenCpM3FzLOa9LS4weIT4d3oDVz4FNF6Me\nJart8ih+E02WpBEFfuKgY1lQkEiknCiRm63UxLkCHzotvFJTVrsPH9/Y/Zn4cObl\nhJszTYxYnY+D2J5Ozyrsm2iuYdzJZaW0FcxkJ0giw1b5R7ULIwV96LXL36XROQo=\n-----END CERTIFICATE-----\n-----BEGIN CERTIFICATE-----\nMIIEvjCCA6agAwIBAgIQBtjZBNVYQ0b2ii+nVCJ+xDANBgkqhkiG9w0BAQsFADBh\nMQswCQYDVQQGEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYDVQQLExB3\nd3cuZGlnaWNlcnQuY29tMSAwHgYDVQQDExdEaWdpQ2VydCBHbG9iYWwgUm9vdCBD\nQTAeFw0yMTA0MTQwMDAwMDBaFw0zMTA0MTMyMzU5NTlaME8xCzAJBgNVBAYTAlVT\nMRUwEwYDVQQKEwxEaWdpQ2VydCBJbmMxKTAnBgNVBAMTIERpZ2lDZXJ0IFRMUyBS\nU0EgU0hBMjU2IDIwMjAgQ0ExMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC\nAQEAwUuzZUdwvN1PWNvsnO3DZuUfMRNUrUpmRh8sCuxkB+Uu3Ny5CiDt3+PE0J6a\nqXodgojlEVbbHp9YwlHnLDQNLtKS4VbL8Xlfs7uHyiUDe5pSQWYQYE9XE0nw6Ddn\ng9/n00tnTCJRpt8OmRDtV1F0JuJ9x8piLhMbfyOIJVNvwTRYAIuE//i+p1hJInuW\nraKImxW8oHzf6VGo1bDtN+I2tIJLYrVJmuzHZ9bjPvXj1hJeRPG/cUJ9WIQDgLGB\nAfr5yjK7tI4nhyfFK3TUqNaX3sNk+crOU6JWvHgXjkkDKa77SU+kFbnO8lwZV21r\neacroicgE7XQPUDTITAHk+qZ9QIDAQABo4IBgjCCAX4wEgYDVR0TAQH/BAgwBgEB\n/wIBADAdBgNVHQ4EFgQUt2ui6qiqhIx56rTaD5iyxZV2ufQwHwYDVR0jBBgwFoAU\nA95QNVbRTLtm8KPiGxvDl7I90VUwDgYDVR0PAQH/BAQDAgGGMB0GA1UdJQQWMBQG\nCCsGAQUFBwMBBggrBgEFBQcDAjB2BggrBgEFBQcBAQRqMGgwJAYIKwYBBQUHMAGG\nGGh0dHA6Ly9vY3NwLmRpZ2ljZXJ0LmNvbTBABggrBgEFBQcwAoY0aHR0cDovL2Nh\nY2VydHMuZGlnaWNlcnQuY29tL0RpZ2lDZXJ0R2xvYmFsUm9vdENBLmNydDBCBgNV\nHR8EOzA5MDegNaAzhjFodHRwOi8vY3JsMy5kaWdpY2VydC5jb20vRGlnaUNlcnRH\nbG9iYWxSb290Q0EuY3JsMD0GA1UdIAQ2MDQwCwYJYIZIAYb9bAIBMAcGBWeBDAEB\nMAgGBmeBDAECATAIBgZngQwBAgIwCAYGZ4EMAQIDMA0GCSqGSIb3DQEBCwUAA4IB\nAQCAMs5eC91uWg0Kr+HWhMvAjvqFcO3aXbMM9yt1QP6FCvrzMXi3cEsaiVi6gL3z\nax3pfs8LulicWdSQ0/1s/dCYbbdxglvPbQtaCdB73sRD2Cqk3p5BJl+7j5nL3a7h\nqG+fh/50tx8bIKuxT8b1Z11dmzzp/2n3YWzW2fP9NsarA4h20ksudYbj/NhVfSbC\nEXffPgK2fPOre3qGNm+499iTcc+G33Mw+nur7SpZyEKEOxEXGlLzyQ4UfaJbcme6\nce1XR2bFuAJKZTRei9AqPCCcUZlM51Ke92sRKw2Sfh3oius2FkOH6ipjv3U/697E\nA7sKPPcw7+uvTPyLNhBzPvOk\n-----END CERTIFICATE-----\n"
+
+  #   ## The base64-encoded TLS key for every Ingress host that has TLS enabled but no secret specified.
+  #   ## If the parameter is not set, for such Ingress hosts NGINX will break any attempt to establish a TLS connection.
+  #   key: "-----BEGIN RSA PRIVATE KEY-----\n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\n-----END RSA PRIVATE KEY-----\n"
+
+  #   ## The secret with a TLS certificate and key for every Ingress host that has TLS enabled but no secret specified.
+  #   ## The value must follow the following format: `<namespace>/<name>`.
+  #   ## Used as an alternative to specifying a certificate and key using `controller.wildcardTLS.cert` and `controller.wildcardTLS.key` parameters.
+  #   secret: default/server-2
+
+  terminationGracePeriodSeconds: 30
+
+  # config:
+  #   client-max-body-size: '0'
+  #   entries:
+  #     proxy-protocol: "True"
+  #     real-ip-header: "proxy_protocol"
+  #     set-real-ip-from: "0.0.0.0/0"
+  #     redirect-to-https: "True"
+  #     ingress-template: |
+  #       # configuration for {{.Ingress.Namespace}}/{{.Ingress.Name}}
+  #       {{range $upstream := .Upstreams}}
+  #       upstream {{$upstream.Name}} {
+  #       	{{if ne $upstream.UpstreamZoneSize "0"}}zone {{$upstream.Name}} {{$upstream.UpstreamZoneSize}};{{end}}
+  #       	{{if $upstream.LBMethod }}{{$upstream.LBMethod}};{{end}}
+  #       	{{range $server := $upstream.UpstreamServers}}
+  #       	server {{$server.Address}}:{{$server.Port}} max_fails={{$server.MaxFails}} fail_timeout={{$server.FailTimeout}} max_conns={{$server.MaxConns}};{{end}}
+  #       	{{if $.Keepalive}}keepalive {{$.Keepalive}};{{end}}
+  #       }{{end}}
+    
+  #       {{range $server := .Servers}}
+  #       server {
+  #       	{{if not $server.GRPCOnly}}
+  #       	{{range $port := $server.Ports}}
+  #       	listen {{$port}}{{if $server.ProxyProtocol}} proxy_protocol{{end}};
+  #       	{{- end}}
+  #       	{{end}}
+    
+  #       	{{if $server.SSL}}
+  #       	{{if $server.TLSPassthrough}}
+  #       	listen unix:/var/lib/nginx/passthrough-https.sock ssl{{if $server.HTTP2}} http2{{end}} proxy_protocol;
+  #       	set_real_ip_from unix:;
+  #       	real_ip_header proxy_protocol;
+  #       	{{else}}
+  #       	{{- range $port := $server.SSLPorts}}
+  #       	listen {{$port}} ssl{{if $server.HTTP2}} http2{{end}}{{if $server.ProxyProtocol}} proxy_protocol{{end}};
+  #       	{{- end}}
+  #       	{{end}}
+  #       	ssl_certificate {{$server.SSLCertificate}};
+  #       	ssl_certificate_key {{$server.SSLCertificateKey}};
+  #       	{{if $server.SSLCiphers}}
+  #       	ssl_ciphers {{$server.SSLCiphers}};
+  #       	{{end}}
+  #       	{{end}}
+    
+  #       	{{range $setRealIPFrom := $server.SetRealIPFrom}}
+  #       	set_real_ip_from {{$setRealIPFrom}};{{end}}
+  #       	{{if $server.RealIPHeader}}real_ip_header {{$server.RealIPHeader}};{{end}}
+  #       	{{if $server.RealIPRecursive}}real_ip_recursive on;{{end}}
+    
+  #       	server_tokens {{$server.ServerTokens}};
+    
+  #       	server_name {{$server.Name}};
+    
+  #       	set $resource_type "ingress";
+  #       	set $resource_name "{{$.Ingress.Name}}";
+  #       	set $resource_namespace "{{$.Ingress.Namespace}}";
+    
+  #       	{{range $proxyHideHeader := $server.ProxyHideHeaders}}
+  #       	proxy_hide_header {{$proxyHideHeader}};{{end}}
+  #       	{{range $proxyPassHeader := $server.ProxyPassHeaders}}
+  #       	proxy_pass_header {{$proxyPassHeader}};{{end}}
+    
+  #       	{{- if and $server.HSTS (or $server.SSL $server.HSTSBehindProxy)}}
+  #       	set $hsts_header_val "";
+  #       	proxy_hide_header Strict-Transport-Security;
+  #       	{{- if $server.HSTSBehindProxy}}
+  #       	if ($http_x_forwarded_proto = 'https') {
+  #       	{{else}}
+  #       	if ($https = on) {
+  #       	{{- end}}
+  #       		set $hsts_header_val "max-age={{$server.HSTSMaxAge}}; {{if $server.HSTSIncludeSubdomains}}includeSubDomains; {{end}}preload";
+  #       	}
+    
+  #       	add_header Strict-Transport-Security "$hsts_header_val" always;
+  #       	{{end}}
+    
+  #       	{{if $server.SSL}}
+  #       	{{if not $server.GRPCOnly}}
+  #       	{{- if $server.SSLRedirect}}
+  #       	if ($scheme = http) {
+  #       		return 301 https://$host:{{index $server.SSLPorts 0}}$request_uri;
+  #       	}
+  #       	{{- end}}
+  #       	{{end}}
+  #       	{{- end}}
+    
+  #       	{{- if $server.RedirectToHTTPS}}
+  #       	if ($proxy_protocol_server_port != '443') {
+  #       		return 301 https://$host$request_uri;
+  #       	}
+  #       	{{- end}}
+    
+  #       	{{- if $server.ServerSnippets}}
+  #       	{{range $value := $server.ServerSnippets}}
+  #       	{{$value}}{{end}}
+  #       	{{- end}}
+    
+  #       	{{range $location := $server.Locations}}
+  #       	location {{$location.Path}} {
+  #       		set $service "{{$location.ServiceName}}";
+  #       		{{with $location.MinionIngress}}
+  #       		# location for minion {{$location.MinionIngress.Namespace}}/{{$location.MinionIngress.Name}}
+  #       		set $resource_name "{{$location.MinionIngress.Name}}";
+  #       		set $resource_namespace "{{$location.MinionIngress.Namespace}}";
+  #       		{{end}}
+  #       		{{if $location.GRPC}}
+  #       		{{if not $server.GRPCOnly}}
+  #       		error_page 400 @grpcerror400;
+  #       		error_page 401 @grpcerror401;
+  #       		error_page 403 @grpcerror403;
+  #       		error_page 404 @grpcerror404;
+  #       		error_page 405 @grpcerror405;
+  #       		error_page 408 @grpcerror408;
+  #       		error_page 414 @grpcerror414;
+  #       		error_page 426 @grpcerror426;
+  #       		error_page 500 @grpcerror500;
+  #       		error_page 501 @grpcerror501;
+  #       		error_page 502 @grpcerror502;
+  #       		error_page 503 @grpcerror503;
+  #       		error_page 504 @grpcerror504;
+  #       		{{end}}
+    
+  #       		{{- if $location.LocationSnippets}}
+  #       		{{range $value := $location.LocationSnippets}}
+  #       		{{$value}}{{end}}
+  #       		{{- end}}
+    
+  #       		grpc_connect_timeout {{$location.ProxyConnectTimeout}};
+  #       		grpc_read_timeout {{$location.ProxyReadTimeout}};
+  #       		grpc_send_timeout {{$location.ProxySendTimeout}};
+  #       		grpc_set_header Host $host;
+  #       		grpc_set_header X-Real-IP $remote_addr;
+  #       		grpc_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+  #       		grpc_set_header X-Forwarded-Host $host;
+  #       		grpc_set_header X-Forwarded-Port $server_port;
+  #       		grpc_set_header X-Forwarded-Proto {{if $server.RedirectToHTTPS}}https{{else}}$scheme{{end}};
+    
+  #       		{{- if $location.ProxyBufferSize}}
+  #       		grpc_buffer_size {{$location.ProxyBufferSize}};
+  #       		{{- end}}
+  #       		{{if $location.SSL}}
+  #       		grpc_pass grpcs://{{$location.Upstream.Name}}{{$location.Rewrite}};
+  #       		{{else}}
+  #       		grpc_pass grpc://{{$location.Upstream.Name}}{{$location.Rewrite}};
+  #       		{{end}}
+  #       		{{else}}
+  #       		proxy_http_version 1.1;
+  #       		{{if $location.Websocket}}
+  #       		proxy_set_header Upgrade $http_upgrade;
+  #       		proxy_set_header Connection $connection_upgrade;
+  #       		{{- else}}
+  #       		{{- if $.Keepalive}}proxy_set_header Connection "";{{end}}
+  #       		{{- end}}
+    
+  #       		{{- if $location.LocationSnippets}}
+  #       		{{range $value := $location.LocationSnippets}}
+  #       		{{$value}}{{end}}
+  #       		{{- end}}
+    
+  #       		proxy_connect_timeout {{$location.ProxyConnectTimeout}};
+  #       		proxy_read_timeout {{$location.ProxyReadTimeout}};
+  #       		proxy_send_timeout {{$location.ProxySendTimeout}};
+  #       		client_max_body_size {{$location.ClientMaxBodySize}};
+  #       		proxy_set_header Host $host;
+  #       		proxy_set_header X-Real-IP $remote_addr;
+  #       		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+  #       		proxy_set_header X-Forwarded-Host $host;
+  #       		proxy_set_header X-Forwarded-Port $server_port;
+  #       		proxy_set_header X-Forwarded-Proto {{if $server.RedirectToHTTPS}}https{{else}}$scheme{{end}};
+  #       		proxy_buffering {{if $location.ProxyBuffering}}on{{else}}off{{end}};
+    
+  #       		{{- if $location.ProxyBuffers}}
+  #       		proxy_buffers {{$location.ProxyBuffers}};
+  #       		{{- end}}
+  #       		{{- if $location.ProxyBufferSize}}
+  #       		proxy_buffer_size {{$location.ProxyBufferSize}};
+  #       		{{- end}}
+  #       		{{- if $location.ProxyMaxTempFileSize}}
+  #       		proxy_max_temp_file_size {{$location.ProxyMaxTempFileSize}};
+  #       		{{- end}}
+  #       		{{if $location.SSL}}
+  #       		proxy_pass https://{{$location.Upstream.Name}}{{$location.Rewrite}};
+  #       		{{else}}
+  #       		proxy_pass http://{{$location.Upstream.Name}}{{$location.Rewrite}};
+  #       		{{end}}
+  #       		{{end}}
+  #       	}{{end}}
+  #       	{{if $server.GRPCOnly}}
+  #       	error_page 400 @grpcerror400;
+  #       	error_page 401 @grpcerror401;
+  #       	error_page 403 @grpcerror403;
+  #       	error_page 404 @grpcerror404;
+  #       	error_page 405 @grpcerror405;
+  #       	error_page 408 @grpcerror408;
+  #       	error_page 414 @grpcerror414;
+  #       	error_page 426 @grpcerror426;
+  #       	error_page 500 @grpcerror500;
+  #       	error_page 501 @grpcerror501;
+  #       	error_page 502 @grpcerror502;
+  #       	error_page 503 @grpcerror503;
+  #       	error_page 504 @grpcerror504;
+  #       	{{end}}
+  #       	{{if $server.HTTP2}}
+  #       	location @grpcerror400 { default_type application/grpc; return 400 "\n"; }
+  #       	location @grpcerror401 { default_type application/grpc; return 401 "\n"; }
+  #       	location @grpcerror403 { default_type application/grpc; return 403 "\n"; }
+  #       	location @grpcerror404 { default_type application/grpc; return 404 "\n"; }
+  #       	location @grpcerror405 { default_type application/grpc; return 405 "\n"; }
+  #       	location @grpcerror408 { default_type application/grpc; return 408 "\n"; }
+  #       	location @grpcerror414 { default_type application/grpc; return 414 "\n"; }
+  #       	location @grpcerror426 { default_type application/grpc; return 426 "\n"; }
+  #       	location @grpcerror500 { default_type application/grpc; return 500 "\n"; }
+  #       	location @grpcerror501 { default_type application/grpc; return 501 "\n"; }
+  #       	location @grpcerror502 { default_type application/grpc; return 502 "\n"; }
+  #       	location @grpcerror503 { default_type application/grpc; return 503 "\n"; }
+  #       	location @grpcerror504 { default_type application/grpc; return 504 "\n"; }
+  #       	{{end}}
+  #       }{{end}}
+
+tcp:
+  # Maple Heights
+  64019: "default/adt:64019"
+  # # St Thomas
+  64002: "default/adt:64002"
+  # # Crestwyn
+  64021: "default/adt:64021"
+  # # Heighland Ridge
+  64013: "default/adt:64013"
+  # # Trustpoint
+  64003: "default/adt:64003"
+  # # Test
+  # # 64055: "default/adt:64055"
+
+
